@@ -2,6 +2,8 @@
 venv/
 .env/
 
+data/MLA_100k.jsonlines
+
 # Archivos de Jupyter y caché de Python
 __pycache__/
 .ipynb_checkpoints/
