@@ -9,10 +9,3 @@ __pycache__/
 .ipynb_checkpoints/
 *.pyc
 
-# Archivos del sistema
-.DS_Store
-Thumbs.db
-
-# Entornos de IDEs (opcional)
-.vscode/
-.idea/
