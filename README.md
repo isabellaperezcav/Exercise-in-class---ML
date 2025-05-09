@@ -1,130 +1,130 @@
-#  Desarrollo de Modelos de Machine Learning
+# Machine Learning Model Development
 
-Este documento describe detalladamente el proceso de desarrollo de modelos de *machine learning*, desde la limpieza de datos hasta la evaluación de modelos, pasando por el análisis exploratorio, ingeniería de características y generación de métricas. El proyecto se implementó en dos cuadernos Jupyter:
+This document details the process of developing *machine learning* models, from data cleaning to model evaluation, including exploratory analysis, feature engineering, and metric generation. The project was implemented in two Jupyter notebooks:
 
-* `001_EDA.ipynb`: análisis exploratorio y limpieza de datos.
-* `002_model.ipynb`: entrenamiento y evaluación de modelos.
-
----
-
-## Objetivo del Proyecto
-
-Desarrollar y comparar distintos modelos de clasificación binaria para predecir la variable `condition` (si un producto es nuevo o usado) utilizando un dataset de MercadoLibre. Se aplicaron técnicas de EDA, limpieza avanzada, ingeniería de variables, codificación y entrenamiento con distintos algoritmos.
-
-El dataset final, listo para modelado, fue guardado como `data_clean.csv`.
+* `001_EDA.ipynb`: exploratory analysis and data cleaning
+* `002_model.ipynb`: model training and evaluation
 
 ---
 
-## Análisis Exploratorio de Datos (EDA)
+## Project Objective
 
-**Ubicación:** `notebooks/001_EDA.ipynb`
+Develop and compare various binary classification models to predict the `condition` variable (whether a product is new or used) using a MercadoLibre dataset. Techniques applied included EDA, advanced cleaning, feature engineering, encoding, and training with various algorithms.
 
-### 1. Carga de Datos
-
-* Fuente: `MLA_100k.jsonlines` (100,000 registros, 48 columnas), incluyendo información sobre productos como precio, estado (`condition`), métodos de envío, ubicación del vendedor, entre otros
-* Origen: El dataset proviene de una empresa de comercio electrónico y contiene diversa información sobre los productos disponibles en su plataforma.
-
-### 2. Información General
-
-* Se revisaron tipos de datos y valores nulos (`df.info()`).
-* Columnas con nulos: `warranty`, `seller_contact`, `official_store_id`, etc.
-
-### 3. Distribución de la Variable Objetivo
-
-* Se graficó la distribución de `condition` (nuevo vs. usado) con un gráfico de barras, revelando un posible desbalance de clases que podría requerir atención durante el modelado.
-
-### 4. Selección Preliminar de Variables
-
-* **Directas:** `price`, `base_price`, `sold_quantity`, `available_quantity`(numéricas, sin necesidad de transformación)
-* **Transformables:**  `shipping`, `pictures`, `title`, `seller_address`(requieren procesamiento para extraer información útil)
+The final dataset, ready for modeling, was saved as `data_clean.csv`.
 
 ---
 
-## Limpieza de Datos
+## Exploratory Data Analysis (EDA)
 
-### 1. Validaciones Iniciales
+**Location:** `notebooks/001_EDA.ipynb`
 
-* Conversión de fechas: `start_time`, `stop_time` a formato `datetime`.
+### 1. Data Loading
 
-### 2. Manejo de Nulos
+* Source: `MLA_100k.jsonlines` (100,000 records, 48 columns), including product details like price, condition, shipping methods, seller location, among others
+* Origin: The dataset comes from an e-commerce company and contains diverse information about products on its platform.
 
-* Columnas con demasiados nulos fueron descartadas.
-* Se creó la variable binaria `has_warranty` a partir de `warranty`.
-* La columna `state` fue imputada con la categoría `"Unknown"`.
+### 2. General Information
 
-### 3. Eliminación de Columnas Irrelevantes
+* Data types and null values reviewed (`df.info()`)
+* Columns with nulls: `warranty`, `seller_contact`, `official_store_id`, etc.
 
-* Se descartaron variables con:
+### 3. Target Variable Distribution
 
-  * Alta cardinalidad o poca varianza
-  * Redundancia
-  * Ausencia total de datos útiles
+* The `condition` distribution (new vs. used) was plotted using a bar chart, revealing a potential class imbalance that may need addressing during modeling.
 
-### 4. Transformación de Variables
+### 4. Preliminary Feature Selection
 
-* `picture_count`: calculado a partir de la longitud de la lista en `pictures`.
-* `title_length`: número de palabras en el título.
-* Variables categóricas como `state`, `buying_mode`, `listing_type_id` codificadas con *one-hot encoding*.
-* La variable objetivo `condition`: codificada como 0 (usado) y 1 (nuevo).
-
-### 5. Validación de Consistencia
-
-* Se eliminaron registros inconsistentes.
-* Las variables fueron normalizadas (nombres limpios y categorías bien definidas).
-
-### 6. Selección Final de Variables
-
-* Numéricas: `price`, `base_price`, `sold_quantity`, `available_quantity`, `picture_count`, `title_length`.
-* Binarias: `has_warranty`, `free_shipping`.
-* Categóricas codificadas: `state`, `buying_mode`, `listing_type_id`.
-* Objetivo: `condition`.
-
-### 7. Exportación del Dataset Limpio 
-
-* Archivo: `data_clean.csv`
-* Ruta: `/data/data_clean.csv`
+* **Direct:** `price`, `base_price`, `sold_quantity`, `available_quantity` (numeric, no transformation needed)
+* **Transformable:** `shipping`, `pictures`, `title`, `seller_address` (require processing to extract useful information)
 
 ---
 
-## Mejoras Clave Implementadas
+## Data Cleaning
 
-* Manejo Inteligente de Nulos: En lugar de imputación ciega, se crearon variables binarias o se agruparon categorías.
-* Reducción de Cardinalidad: Agrupación de valores raros en "Other" para mejorar la generalización del modelo.
-* Eliminación Justificada de Columnas: Basado en proporción de nulos, cardinalidad, redundancia o irrelevancia.
-* Validaciones Finales: Datos verificados para consistencia, duplicados y formato.
+### 1. Initial Validations
+
+* Date conversion: `start_time`, `stop_time` to `datetime` format
+
+### 2. Handling Nulls
+
+* Columns with too many nulls were discarded
+* Binary variable `has_warranty` created from `warranty`
+* `state` column imputed with the category `"Unknown"`
+
+### 3. Irrelevant Column Removal
+
+* Variables discarded based on:
+
+  * High cardinality or low variance
+  * Redundancy
+  * Complete absence of useful data
+
+### 4. Variable Transformation
+
+* `picture_count`: calculated from the length of the list in `pictures`
+* `title_length`: word count in the title
+* Categorical variables like `state`, `buying_mode`, `listing_type_id` encoded using one-hot encoding
+* Target variable `condition`: encoded as 0 (used) and 1 (new)
+
+### 5. Consistency Validation
+
+* Inconsistent records were removed
+* Variables were normalized (clean names and well-defined categories)
+
+### 6. Final Feature Selection
+
+* Numerical: `price`, `base_price`, `sold_quantity`, `available_quantity`, `picture_count`, `title_length`
+* Binary: `has_warranty`, `free_shipping`
+* Encoded categoricals: `state`, `buying_mode`, `listing_type_id`
+* Target: `condition`
+
+### 7. Clean Dataset Export
+
+* File: `data_clean.csv`
+* Path: `/data/data_clean.csv`
 
 ---
 
-##  Ingeniería de Características
+## Key Improvements Implemented
 
-* **Escalado Numérico:** `StandardScaler` sin centrar la media (`with_mean=False`), preservando la esparsidad
-* **Codificación Categórica:** Categóricas: Se utilizó `OneHotEncoder` para `state`, `buying_mode` y `listing_type_id` (ya codificados en data_clean.csv)
-* **División de Datos:** 80% entrenamiento, 20% prueba, con `train_test_split(random_state=42)` para garantizar reproducibilidad
-
----
-
-##  Entrenamiento de Modelos
-
-**Ubicación:** `notebooks/002_model.ipynb`
-
-Se evaluaron múltiples modelos usando una tubería (modelPipeline) que integraba preprocesamiento y entrenamiento. Se entrenaron los siguientes algoritmos:
-
-* **Logistic Regression:** Modelo lineal para clasificación binaria
-* **MLP (Perceptrón Multicapa):** Red neuronal con capas ocultas, capaz de aprender patrones no lineales complejos
-* **Decision Tree:** basado en la división recursiva del espacio de características; propenso al sobreajuste
-* **Random Forest:** Ensamble de árboles de decisión entrenados con muestras aleatorias del dataset (bagging)
-* **XGBoost:** Algoritmo de boosting basado en árboles que entrena modelos secuencialmente para corregir errores de los anteriores. eficiente y preciso, ideal para datos estructurados
-* **SVC:** Clasificador que maximiza la separación entre clases; eficaz con datos complejos
-* **KNeighbors:** Clasifica según los vecinos más cercanos; simple pero sensible a la escala y a la elección de K
-* **Gaussian Naive Bayes:** Modelo probabilístico rápido que asume independencia entre variables
+* Smart Null Handling: Instead of blind imputation, binary variables were created or categories grouped
+* Cardinality Reduction: Rare values grouped into "Other" to improve model generalization
+* Justified Column Removal: Based on null ratio, cardinality, redundancy, or irrelevance
+* Final Validations: Data checked for consistency, duplicates, and format
 
 ---
 
-## Evaluación de Modelos
+## Feature Engineering
 
-###  Métricas Comparativas
+* **Numeric Scaling:** `StandardScaler` without centering the mean (`with_mean=False`) to preserve sparsity
+* **Categorical Encoding:** `OneHotEncoder` used for `state`, `buying_mode`, and `listing_type_id` (already encoded in `data_clean.csv`)
+* **Data Split:** 80% training, 20% testing using `train_test_split(random_state=42)` for reproducibility
 
-| Modelo              | F1 Score   | Precision  | Recall     | Accuracy   |
+---
+
+## Model Training
+
+**Location:** `notebooks/002_model.ipynb`
+
+Multiple models were evaluated using a pipeline (`modelPipeline`) integrating preprocessing and training. The following algorithms were trained:
+
+* **Logistic Regression:** Linear model for binary classification
+* **MLP (Multilayer Perceptron):** Neural network with hidden layers, capable of learning complex nonlinear patterns
+* **Decision Tree:** Based on recursive splitting of feature space; prone to overfitting
+* **Random Forest:** Ensemble of decision trees trained on random samples (bagging)
+* **XGBoost:** Tree-based boosting algorithm that trains models sequentially to correct previous errors; efficient and accurate, ideal for structured data
+* **SVC:** Classifier that maximizes class separation; effective with complex data
+* **KNeighbors:** Classifies based on nearest neighbors; simple but sensitive to scaling and K choice
+* **Gaussian Naive Bayes:** Fast probabilistic model assuming feature independence
+
+---
+
+## Model Evaluation
+
+### Comparative Metrics
+
+| Model               | F1 Score   | Precision  | Recall     | Accuracy   |
 | ------------------- | ---------- | ---------- | ---------- | ---------- |
 | Logistic Regression | 0.7919     | 0.6745     | 0.9589     | 0.7300     |
 | MLP                 | 0.7959     | 0.9083     | 0.7083     | 0.8054     |
@@ -135,55 +135,57 @@ Se evaluaron múltiples modelos usando una tubería (modelPipeline) que integrab
 | KNeighbors          | 0.8209     | 0.8392     | 0.8034     | 0.8122     |
 | GaussianNB          | 0.4458     | 0.8970     | 0.2966     | 0.6048     |
 
- **XGBoost fue el mejor modelo**, con el F1 más alto, buen balance entre precisión y recall, y excelente accuracy
+**XGBoost was the best model**, with the highest F1 score, good balance between precision and recall, and excellent accuracy.
 
 ---
 
-## Evaluación Final del Modelo XGBoost
+## Final Evaluation of the XGBoost Model
 
-### Matriz de Confusión
+### Confusion Matrix
 
-![Matriz de Confusión](model/xgb_Matriz_confucion.png)
+![Confusion Matrix](model/xgb_Matriz_confucion.png)
 
-* **Verdaderos Positivos (TP)**: 8793
-* **Verdaderos Negativos (TN)**: 7987
-* **Falsos Positivos (FP)**: 1296
-* **Falsos Negativos (FN)**: 1924
+* **True Positives (TP):** 8793
+* **True Negatives (TN):** 7987
+* **False Positives (FP):** 1296
+* **False Negatives (FN):** 1924
 
-Interpretacion: 
-* La alta proporción de TN y TP indica que XGBoost es efectivo para distinguir entre productos nuevos y usados
-* Los errores (FP y FN) sugieren que el modelo podría beneficiarse de técnicas para abordar el desbalance de clases (por ejemplo, SMOTE) o ajuste de hiperparámetros
+Interpretation:
 
-### Curva ROC
+* The high number of TNs and TPs indicates that XGBoost effectively distinguishes between new and used products
+* Errors (FP and FN) suggest the model could benefit from class imbalance techniques (e.g., SMOTE) or hyperparameter tuning
 
-![Curva ROC](model/xgb_curva_ROC.png)
+### ROC Curve
 
+![ROC Curve](model/xgb_curva_ROC.png)
 
 * **AUC = 0.9243**
 
-La curva ROC demuestra que el modelo tiene **gran capacidad de discriminación**. Cuanto más se acerca el AUC a 1, mejor el rendimiento. En este caso, **AUC = 0.9243**
+The ROC curve shows the model has **strong discriminatory power**. The closer the AUC is to 1, the better the performance. In this case, **AUC = 0.9243**
 
 ---
 
+## Conclusions
 
-##  Conclusiones
-
-* El proceso de limpieza y transformación permitió convertir campos complejos y nulos en variables significativas para el modelo.
-* El modelo XGBoost superó a los demás clasificadores, con excelente balance entre precisión (87.15%) y recall (82.04%).
-* La matriz de confusión muestra un desempeño robusto con más de 16,700 predicciones correctas y pocos falsos positivos y negativos, lo que valida su uso para predicciones en un contexto real
-* La curva ROC y el AUC de 0.92 validan que el modelo distingue muy bien entre productos nuevos y usados.
-* El sistema puede implementarse en producción para automatizar la detección de condición de productos, optimizando alertas, recomendaciones y validaciones de calidad.
-* El modelo XGBoost es intensivo, lo que podría limitar su uso en entornos con recursos restringidos (tiene un alto costo computacional) 
+* The cleaning and transformation process allowed for converting complex and null fields into meaningful variables
+* XGBoost outperformed other classifiers, with an excellent balance between precision (87.15%) and recall (82.04%)
+* The confusion matrix shows robust performance with over 16,700 correct predictions and few false positives/negatives, supporting its use in real-world scenarios
+* The ROC curve and AUC of 0.92 confirm the model’s strong ability to differentiate between new and used products
+* The system can be deployed in production to automate product condition detection, optimizing alerts, recommendations, and quality validations
+* XGBoost is resource-intensive, which may limit its use in low-resource environments due to high computational cost
 
 ---
 
-##  Futuro del Proyecto
+## Project Future
 
-* Afinar hiperparámetros de XGBoost con búsqueda bayesiana para optimizar el modelo.
-* Aplicar SMOTE, ponderación de clases o sobremuestreo para mejorar el rendimiento en clases minoritarias
-* Implementar k-fold para estimaciones más robustas
-* Usar SHAP o LIME para analizar predicciones de XGBoost
+* Fine-tune XGBoost hyperparameters using Bayesian search to optimize the model
+* Apply SMOTE, class weighting, or oversampling to improve performance on minority classes
+* Implement k-fold cross-validation for more robust estimates
+* Use SHAP or LIME to analyze XGBoost predictions
 
+---
 
-##  Contacto
-Para preguntas, contacte a isabellaperezcav@gmail.com
+## Contact
+
+For questions, contact [isabellaperezcav@gmail.com](mailto:isabellaperezcav@gmail.com)
+
