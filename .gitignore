@@ -1,0 +1,16 @@
+# Ignorar entorno virtual
+venv/
+.env/
+
+# Archivos de Jupyter y caché de Python
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Entornos de IDEs (opcional)
+.vscode/
+.idea/
